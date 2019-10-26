@@ -24,42 +24,32 @@ export default class App extends React.Component {
   }
 
   async componentDidMount() {
-    const { status } = await Permissions.getAsync(Permissions.LOCATION)
+    const { status } = await Permissions.getAsync(Permissions.LOCATION);
 
     if (status !== 'granted') {
-      const response = await Permissions.askAsync(Permissions.LOCATION)
+      const response = await Permissions.askAsync(Permissions.LOCATION);
     }
 
     Geocoder.init("AIzaSyCAjd5RY-n2Tm0Qm4wcDFYUuEOvJkX3bqI");
 
-    navigator.geolocation.getCurrentPosition(
+    await navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude, longitude } }) => {
         this.setState({ latitude: latitude, longitude: longitude }, () => console.log('State: ', this.state)),
           (err) => console.warn(err);
-        //this.geocodeLocation(latitude, longitude);
-        this.geocodeLocation2("375 18th St NW").then(res =>
-          this.setState({marker: res}, () => console.log('Marker Set')),
-            (err) => console.warn(err));
-      })
+        this.geocodeLocation2("375 18th St NW").then(res => {
+          this.setState({marker: res}, () => console.log('State: ', this.state)),
+            (err) => console.warn(err);
+        })
+      });
   }
 
-  async geocodeLocation(lat, lng) {
-    Geocoder.from({
-      latitude: lat,
-      longitude: lng
-    }).then(json => {
-      let addressComponent = json.results[0].address_components;
-      console.log(addressComponent);
-    }).catch(err => console.warn(err));
+  componentDidUpdate() {
+    console.log("Update!");
   }
 
   async geocodeLocation2(name) {
-    Geocoder.from(name)
-      .then(json => {
-        let addressComponent = json.results[0].geometry.location;
-        console.log('Coords: ', addressComponent);
-        return addressComponent;
-      }).catch(err => console.warn(err));
+    const json = await Geocoder.from(name);
+    return json.results[0].geometry.location;
   }
 
   render() {
@@ -79,7 +69,7 @@ export default class App extends React.Component {
             longitudeDelta: 0.0421
           }}
           >
-            {marker != null && <Marker coordinate={ marker.lat, marker.lng } />}
+            {marker != null && marker != undefined && <Marker coordinate={{ latitude: marker.lat, longitude: marker.lng }} title="Target" description="Buy Stuff" />}
         </MapView>
       )
     }
