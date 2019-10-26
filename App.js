@@ -1,16 +1,48 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import RetroMapStyles from './assets/MapStyles/RetroMapStyles.json';
 import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
 
+import Greeting from './src/components/Greeting';
+//import ListItem from './src/components/ListItem.js';
+import List from './src/components/List';
+import CartModal from './src/components/CartModal';
+
 export default class App extends React.Component {
   state = {
     latitude: null,
     longitude: null,
-    marker: null
+    marker: null,
+    selectedItems: [],
+    modalVisible: false,
+  }
+
+  toggleModalVisible=() =>{
+    const {modalVisible} = this.state;
+    this.setState({modalVisible: !modalVisible});
+  }
+
+  addToCart=(item) =>{
+    const {selectedItems} = this.state;
+    const items_copy = [...selectedItems];
+    let found = false;
+    for (let i = 0; i < items_copy.length ; i ++) {
+      if (items_copy[i].name == item.name) {
+        items_copy[i].quantity += 1;
+        found = true;
+        break;
+      }
+    }
+    if (found == false) {
+      items_copy.push(item);
+    }
+    this.setState({
+      selectedItems: items_copy
+    })
+    console.log(this.state.selectedItems);
   }
 
   renderMarkers() {
@@ -63,10 +95,11 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { latitude, longitude, marker } = this.state
+    const { latitude, longitude, marker , modalVisible} = this.state
 
     if (latitude) {
       return (
+        <View style={{ flex: 1 }}>
         <MapView
         provider = { PROVIDER_GOOGLE }
           showsUserLocation
@@ -81,6 +114,24 @@ export default class App extends React.Component {
           >
             {marker != null && <Marker coordinate={ marker.lat, marker.lng } />}
         </MapView>
+        <Greeting />
+        
+        <List addToCart = {this.addToCart} items={[
+          {name: 'apple', price: 3, quantity: 1},
+          {name: 'orange', price: 2, quantity: 1},
+          {name: 'banana', price: 1, quantity: 1}
+        ]}/>
+
+        <Button
+           title= "View Shopping Cart"
+           onPress = {this.toggleModalVisible}
+        />
+
+        <CartModal 
+          cartItems = {this.state.selectedItems} 
+          toggleModalVisible = {this.toggleModalVisible}
+          modalVisible = {modalVisible} />
+        </View>
       )
     }
 
