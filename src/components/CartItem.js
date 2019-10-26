@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text} from 'react-native';
+import { StyleSheet, View, Text, Button, Alert} from 'react-native';
 
 const styles = StyleSheet.create({
     itemAttribute : {
@@ -12,6 +12,12 @@ const styles = StyleSheet.create({
 });
 
 class CartItem extends React.Component {
+    onPressButton=() => {
+        const {name, removeFromCart} = this.props;
+        removeFromCart(name);
+        Alert.alert('Item Removed');
+    }
+
     render() {
         const {name, price, quantity} = this.props;
         return (
@@ -22,6 +28,10 @@ class CartItem extends React.Component {
                 <Text>
                     ${quantity*price}
                 </Text>
+                <Button
+                    title="Remove"
+                    onPress={this.onPressButton}
+                />
             </View>
         )
     }

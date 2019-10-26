@@ -24,7 +24,7 @@ sumTotal=() =>{
 class CartModal extends React.Component {
 
     render() {
-        const {cartItems, toggleModalVisible, modalVisible} = this.props;
+        const {cartItems, toggleModalVisible, modalVisible, removeFromCart} = this.props;
         let total = 0;
         for (let i = 0; i < cartItems.length; i++) {
           total += cartItems[i].quantity * cartItems[i].price;
@@ -44,7 +44,9 @@ class CartModal extends React.Component {
                     key={cartItem.name} 
                     name={cartItem.name}
                     price={cartItem.price}
-                    quantity={cartItem.quantity}/>)}
+                    quantity={cartItem.quantity}
+                    removeFromCart={removeFromCart}
+                  />)}
                 <View style={styles.itemAttribute}> 
                   <Text>
                       Total Price

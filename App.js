@@ -25,6 +25,8 @@ export default class App extends React.Component {
     this.setState({modalVisible: !modalVisible});
   }
 
+  
+
   addToCart=(item) =>{
     const {selectedItems} = this.state;
     const items_copy = [...selectedItems];
@@ -43,6 +45,15 @@ export default class App extends React.Component {
       selectedItems: items_copy
     })
     console.log(this.state.selectedItems);
+  }
+
+  removeFromCart=(item_name) =>{
+    const {selectedItems} = this.state;
+    console.log("tried to remove");
+    this.setState(
+      {selectedItems: selectedItems.filter(function(item) {
+        return item.name !== item_name
+    })});
   }
 
   renderMarkers() {
@@ -128,6 +139,7 @@ export default class App extends React.Component {
         />
 
         <CartModal 
+          removeFromCart = {this.removeFromCart}
           cartItems = {this.state.selectedItems} 
           toggleModalVisible = {this.toggleModalVisible}
           modalVisible = {modalVisible} />
