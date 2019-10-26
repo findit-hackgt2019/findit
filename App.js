@@ -1,10 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import RetroMapStyles from './assets/MapStyles/RetroMapStyles.json';
 import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
+
+const PLACE_API = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=';
+const API_KEY = 'AIzaSyCAjd5RY-n2Tm0Qm4wcDFYUuEOvJkX3bqI';
 
 import Greeting from './src/components/Greeting';
 //import ListItem from './src/components/ListItem.js';
@@ -13,6 +15,13 @@ import CartModal from './src/components/CartModal';
 
 export default class App extends React.Component {
   state = {
+    region: {
+      latitude: null,
+      longitude: null,
+      latitudeDelta: null,
+      longitudeDelta: null
+    },
+    locations: [],
     latitude: null,
     longitude: null,
     marker: null,
@@ -45,77 +54,83 @@ export default class App extends React.Component {
     console.log(this.state.selectedItems);
   }
 
-  renderMarkers() {
-    return this.props.places.map((place, i) => (
-      <Marker
-        key={i}
-        title={place.name}
-        coordinate={place.coods}
-      />
-    ));
-  }
-
   async componentDidMount() {
-    const { status } = await Permissions.getAsync(Permissions.LOCATION)
+    const { status } = await Permissions.getAsync(Permissions.LOCATION);
 
     if (status !== 'granted') {
-      const response = await Permissions.askAsync(Permissions.LOCATION)
+      const response = await Permissions.askAsync(Permissions.LOCATION);
     }
 
-    Geocoder.init("AIzaSyCAjd5RY-n2Tm0Qm4wcDFYUuEOvJkX3bqI");
+    Geocoder.init(API_KEY);
 
     navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude, longitude } }) => {
-        this.setState({ latitude: latitude, longitude: longitude }, () => console.log('State: ', this.state)),
-          (err) => console.warn(err);
-        //this.geocodeLocation(latitude, longitude);
-        this.geocodeLocation2("375 18th St NW").then(res =>
-          this.setState({marker: res}, () => console.log('Marker Set')),
-            (err) => console.warn(err));
-      })
+      ({ coords: { latitude, longitude }}) => {
+        this.setState({ region: { latitude: latitude, longitude: longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}),
+        (err) => console.warn(err)
+
+        fetch(PLACE_API + latitude + ',' + longitude + '&radius=3000&type=store&key=' + API_KEY)
+          .then(res => res.json())
+          .then(data => {
+            this.setState({ locations: data.results }),
+            (err) => console.log(err)
+        })
+        .catch(console.log)
+      });
   }
 
-  async geocodeLocation(lat, lng) {
-    Geocoder.from({
-      latitude: lat,
-      longitude: lng
-    }).then(json => {
-      let addressComponent = json.results[0].address_components;
-      console.log(addressComponent);
-    }).catch(err => console.warn(err));
-  }
+  // async getCoords(name) {
+  //   const json = await Geocoder.from(name);
+  //   return json.results[0].geometry.location;
+  // }
 
-  async geocodeLocation2(name) {
-    Geocoder.from(name)
-      .then(json => {
-        let addressComponent = json.results[0].geometry.location;
-        console.log('Coords: ', addressComponent);
-        return addressComponent;
-      }).catch(err => console.warn(err));
+  renderMarkers = () => {
+    const { locations } = this.state
+    return (
+      <>
+        {
+          locations.map((location, idx) => {
+            const {
+              geometry: { location: { lat, lng }},
+              name
+            } = location
+            if (lat == null || lng == null) return null;
+            return (
+            <>
+              <Marker
+                key={idx}
+                coordinate={{ latitude: lat, longitude: lng }}
+                onCalloutPress={this.markerClick} >
+                    <View style={styles.callout}>
+                        <Text style={styles.calloutText}>{name}</Text>
+                    </View>
+              </Marker>
+            </>
+            )
+          })
+        }
+      </>
+    )
   }
 
   render() {
-    const { latitude, longitude, marker , modalVisible} = this.state
+    const { region, locations, modalVisible} = this.state
 
-    if (latitude) {
+    if (region.latitude) {
       return (
         <View style={{ flex: 1 }}>
         <MapView
-        provider = { PROVIDER_GOOGLE }
+          provider = { PROVIDER_GOOGLE }
           showsUserLocation
           style={{ flex: 1 }}
           customMapStyle={ RetroMapStyles }
-          initialRegion = {{
-            latitude,
-            longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421
-          }}
+          moveOnMarkerPress={true}
+          region = { region }
+          minZoomLevel={ 10 }
           >
-            {marker != null && <Marker coordinate={ marker.lat, marker.lng } />}
+          {locations != undefined && this.renderMarkers()}
         </MapView>
         <Greeting />
-        
+
         <List addToCart = {this.addToCart} items={[
           {name: 'apple', price: 3, quantity: 1},
           {name: 'orange', price: 2, quantity: 1},
@@ -127,8 +142,8 @@ export default class App extends React.Component {
            onPress = {this.toggleModalVisible}
         />
 
-        <CartModal 
-          cartItems = {this.state.selectedItems} 
+        <CartModal
+          cartItems = {this.state.selectedItems}
           toggleModalVisible = {this.toggleModalVisible}
           modalVisible = {modalVisible} />
         </View>
@@ -150,4 +165,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  callout: {
+    backgroundColor: "#f7fffc",
+    padding: 5,
+    opacity: 0.8,
+    borderRadius: 5
+  },
+  calloutText: {
+    fontSize: 8,
+    padding: 2,
+    fontWeight: "bold",
+    color: "#000"
+  }
 });
