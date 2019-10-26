@@ -4,14 +4,14 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import RetroMapStyles from './assets/MapStyles/RetroMapStyles.json';
 import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
-
-const PLACE_API = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=';
-const API_KEY = 'AIzaSyCAjd5RY-n2Tm0Qm4wcDFYUuEOvJkX3bqI';
-
 import Greeting from './src/components/Greeting';
 //import ListItem from './src/components/ListItem.js';
 import List from './src/components/List';
 import CartModal from './src/components/CartModal';
+import { getAllItems, searchItems } from "./src/actions/api";
+
+const PLACE_API = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=';
+const API_KEY = 'AIzaSyCAjd5RY-n2Tm0Qm4wcDFYUuEOvJkX3bqI';
 
 export default class App extends React.Component {
   state = {
@@ -27,6 +27,7 @@ export default class App extends React.Component {
     marker: null,
     selectedItems: [],
     modalVisible: false,
+    storeItems: []
   }
 
   toggleModalVisible=() =>{
@@ -76,6 +77,13 @@ export default class App extends React.Component {
         })
         .catch(console.log)
       });
+
+    const storeItems = await getAllItems();
+    if (storeItems != null) {
+      this.setState({
+        storeItems
+      });
+    }
   }
 
   // async getCoords(name) {
@@ -113,7 +121,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { region, locations, modalVisible} = this.state
+    const { region, locations, modalVisible, storeItems } = this.state
 
     if (region.latitude) {
       return (
@@ -131,11 +139,7 @@ export default class App extends React.Component {
         </MapView>
         <Greeting />
 
-        <List addToCart = {this.addToCart} items={[
-          {name: 'apple', price: 3, quantity: 1},
-          {name: 'orange', price: 2, quantity: 1},
-          {name: 'banana', price: 1, quantity: 1}
-        ]}/>
+        <List addToCart = {this.addToCart} items={storeItems}/>
 
         <Button
            title= "View Shopping Cart"

@@ -1,5 +1,6 @@
 import React from 'react';
-import {Modal, StyleSheet, View, Text, Alert, Button} from 'react-native';
+import {Modal, StyleSheet, ScrollView, View, Text, Alert, Button} from 'react-native';
+import QRCode from 'react-qr-code';
 import CartItem from "./CartItem";
 
 const styles = StyleSheet.create({
@@ -16,13 +17,12 @@ const styles = StyleSheet.create({
   }
 });
 
-sumTotal=() =>{
+const sumTotal = () => {
   const {modalVisible} = this.state;
   this.setState({modalVisible: !modalVisible});
 }
 
-class CartModal extends React.Component {
-
+export default class CartModal extends React.Component {
     render() {
         const {cartItems, toggleModalVisible, modalVisible} = this.props;
         let total = 0;
@@ -31,21 +31,25 @@ class CartModal extends React.Component {
         }
         console.log(cartItems);
         return (
-            <View>
-              <Modal
-                animationType = "slide"
-                transparent= {false}
-                visible = {modalVisible}>
+            <Modal
+              animationType = "slide"
+              transparent= {false}
+              visible = {modalVisible}>
+              <ScrollView style={{ flex: 1 }}>
                 <Text style={styles.paragraph}>
                     Shopping Cart
                 </Text>
-                {cartItems.map (cartItem => 
-                  <CartItem 
-                    key={cartItem.name} 
+                <QRCode
+                  value={JSON.stringify(cartItems)}
+                  style={{ marginLeft: 'auto', marginRight: 'auto' }}
+                />
+                {cartItems.map (cartItem =>
+                  <CartItem
+                    key={cartItem.name}
                     name={cartItem.name}
                     price={cartItem.price}
                     quantity={cartItem.quantity}/>)}
-                <View style={styles.itemAttribute}> 
+                <View style={styles.itemAttribute}>
                   <Text>
                       Total Price
                   </Text>
@@ -57,38 +61,8 @@ class CartModal extends React.Component {
                   title= "Close Shopping Cart"
                   onPress={toggleModalVisible}
                />
-              </Modal>
-            </View>
+              </ScrollView>
+            </Modal>
         )
     }
 }
-/*
-export const Cart = props => {
-    const totalPrice = props.selectedItems.reduce(
-      (total, curr) => (total += curr.price),
-      0
-    );
-  
-    return (
-      <div className="cart-wrapper">
-        <h2>Cart</h2>
-        {props.selectedItems.length > 0 && (
-          <div className="selected-items">
-            <div>Selected Items:</div>
-            {props.selectedItems.map(item => (
-              <CartItem
-                key={item.id}
-                name={item.name}
-                id={item.id}
-                onRemoveCartItem={props.onRemoveCartItem}
-              />
-            ))}
-          </div>
-        )}
-        <div>Total: ${totalPrice}</div>
-      </div>
-    );
-  };
-  */
-
-  export default CartModal;
