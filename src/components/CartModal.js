@@ -7,13 +7,13 @@ const styles = StyleSheet.create({
         padding: 20,
         textAlign: 'center'
     },
-    itemAttribute : {
+    itemAttribute: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
       textAlign: 'center',
       padding: 20
-  }
+    },
 });
 
 sumTotal=() =>{
@@ -64,33 +64,5 @@ class CartModal extends React.Component {
         )
     }
 }
-/*
-export const Cart = props => {
-    const totalPrice = props.selectedItems.reduce(
-      (total, curr) => (total += curr.price),
-      0
-    );
-  
-    return (
-      <div className="cart-wrapper">
-        <h2>Cart</h2>
-        {props.selectedItems.length > 0 && (
-          <div className="selected-items">
-            <div>Selected Items:</div>
-            {props.selectedItems.map(item => (
-              <CartItem
-                key={item.id}
-                name={item.name}
-                id={item.id}
-                onRemoveCartItem={props.onRemoveCartItem}
-              />
-            ))}
-          </div>
-        )}
-        <div>Total: ${totalPrice}</div>
-      </div>
-    );
-  };
-  */
 
   export default CartModal;
