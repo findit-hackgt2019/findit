@@ -1,26 +1,40 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import RetroMapStyles from './assets/MapStyles/RetroMapStyles.json';
 import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
 
+const locations = require('./assets/Locations/locations.json')
+
 export default class App extends React.Component {
   state = {
     latitude: null,
     longitude: null,
-    marker: null
+    marker: null,
+    locations: locations
   }
 
-  renderMarkers() {
-    return this.props.places.map((place, i) => (
-      <Marker
-        key={i}
-        title={place.name}
-        coordinate={place.coods}
-      />
-    ));
+  renderMarkers = () => {
+    const { locations } = this.state
+    return (
+      <View>
+        {
+          locations.map((location, idx) => {
+            const {
+              coords: { latitude, longitude }
+            } = location
+            return (
+              <Marker
+                key={idx}
+                coordinate={{ latitude, longitude }}
+                onPress={this.onMarkerPress(location)}
+              />
+            )
+          })
+        }
+      </View>
+    )
   }
 
   async componentDidMount() {
@@ -33,23 +47,43 @@ export default class App extends React.Component {
     Geocoder.init("AIzaSyCAjd5RY-n2Tm0Qm4wcDFYUuEOvJkX3bqI");
 
     await navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude, longitude } }) => {
-        this.setState({ latitude: latitude, longitude: longitude }, () => console.log('State: ', this.state)),
-          (err) => console.warn(err);
-        this.geocodeLocation2("375 18th St NW").then(res => {
-          this.setState({marker: res}, () => console.log('State: ', this.state)),
-            (err) => console.warn(err);
-        })
-      });
+      ({ coords: { latitude, longitude }}) =>
+        this.setState({ latitude: latitude, longitude: longitude }),
+        (err) => console.warn(err)
+      );
+
+      const { locations: [sampleLocation] } = this.state
+
+      this.setState({
+        desLatitude: sampleLocation.coords.latitude,
+        desLongitude: sampleLocation.coords.longitude
+      })
   }
 
-  componentDidUpdate() {
-    console.log("Update!");
-  }
-
-  async geocodeLocation2(name) {
+  async getCoords(name) {
     const json = await Geocoder.from(name);
     return json.results[0].geometry.location;
+  }
+
+  renderMarkers = () => {
+    const { locations } = this.state
+    return (
+      <View>
+        {
+          locations.map((location, idx) => {
+            const {
+              coords: { latitude, longitude }
+            } = location
+            return (
+              <Marker
+                key={idx}
+                coordinate={{ latitude, longitude }}
+              />
+            )
+          })
+        }
+      </View>
+    )
   }
 
   render() {
@@ -67,9 +101,8 @@ export default class App extends React.Component {
             longitude,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421
-          }}
-          >
-            {marker != null && marker != undefined && <Marker coordinate={{ latitude: marker.lat, longitude: marker.lng }} title="Target" description="Buy Stuff" />}
+          }}>
+          {this.renderMarkers()}
         </MapView>
       )
     }
