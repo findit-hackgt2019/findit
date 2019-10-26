@@ -1,40 +1,18 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Callout, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import RetroMapStyles from './assets/MapStyles/RetroMapStyles.json';
 import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
 
-const locations = require('./assets/Locations/locations.json')
+const PLACE_API = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=';
+const API_KEY = 'AIzaSyCAjd5RY-n2Tm0Qm4wcDFYUuEOvJkX3bqI';
 
 export default class App extends React.Component {
   state = {
     latitude: null,
     longitude: null,
-    marker: null,
-    locations: locations
-  }
-
-  renderMarkers = () => {
-    const { locations } = this.state
-    return (
-      <View>
-        {
-          locations.map((location, idx) => {
-            const {
-              coords: { latitude, longitude }
-            } = location
-            return (
-              <Marker
-                key={idx}
-                coordinate={{ latitude, longitude }}
-                onPress={this.onMarkerPress(location)}
-              />
-            )
-          })
-        }
-      </View>
-    )
+    locations: []
   }
 
   async componentDidMount() {
@@ -44,20 +22,21 @@ export default class App extends React.Component {
       const response = await Permissions.askAsync(Permissions.LOCATION);
     }
 
-    Geocoder.init("AIzaSyCAjd5RY-n2Tm0Qm4wcDFYUuEOvJkX3bqI");
+    Geocoder.init(API_KEY);
 
-    await navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude, longitude }}) =>
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: { latitude, longitude }}) => {
         this.setState({ latitude: latitude, longitude: longitude }),
         (err) => console.warn(err)
-      );
 
-      const { locations: [sampleLocation] } = this.state
-
-      this.setState({
-        desLatitude: sampleLocation.coords.latitude,
-        desLongitude: sampleLocation.coords.longitude
-      })
+        fetch(PLACE_API + latitude + ',' + longitude + '&radius=3000&type=store&key=' + API_KEY)
+          .then(res => res.json())
+          .then(data => {
+            this.setState({ locations: data.results }),
+            (err) => console.log(err)
+        })
+        .catch(console.log)
+      });
   }
 
   async getCoords(name) {
@@ -68,41 +47,51 @@ export default class App extends React.Component {
   renderMarkers = () => {
     const { locations } = this.state
     return (
-      <View>
+      <>
         {
           locations.map((location, idx) => {
             const {
-              coords: { latitude, longitude }
+              geometry: { location: { lat, lng }},
+              name
             } = location
+            if (lat == null || lng == null) return null;
             return (
+            <>
               <Marker
                 key={idx}
-                coordinate={{ latitude, longitude }}
-              />
+                coordinate={{ latitude: lat, longitude: lng }}
+                onCalloutPress={this.markerClick} >
+                    <View style={styles.callout}>
+                        <Text style={styles.calloutText}>{name}</Text>
+                    </View>
+              </Marker>
+            </>
             )
           })
         }
-      </View>
+      </>
     )
   }
 
   render() {
-    const { latitude, longitude, marker } = this.state
+    const { latitude, longitude, locations } = this.state
 
     if (latitude) {
       return (
         <MapView
-        provider = { PROVIDER_GOOGLE }
+          provider = { PROVIDER_GOOGLE }
           showsUserLocation
           style={{ flex: 1 }}
           customMapStyle={ RetroMapStyles }
+          moveOnMarkerPress={true}
           initialRegion = {{
             latitude,
             longitude,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421
-          }}>
-          {this.renderMarkers()}
+          }}
+          >
+          {locations != undefined && this.renderMarkers()}
         </MapView>
       )
     }
@@ -117,9 +106,18 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1
   },
+  callout: {
+    backgroundColor: "#f7fffc",
+    padding: 5,
+    opacity: 0.8,
+    borderRadius: 5
+  },
+  calloutText: {
+    fontSize: 8,
+    padding: 2,
+    fontWeight: "bold",
+    color: "#000"
+  }
 });
