@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import MapView, { Callout, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { StyleSheet, Text, View, Button } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import RetroMapStyles from './assets/MapStyles/RetroMapStyles.json';
 import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
@@ -10,8 +10,12 @@ const API_KEY = 'AIzaSyCAjd5RY-n2Tm0Qm4wcDFYUuEOvJkX3bqI';
 
 export default class App extends React.Component {
   state = {
-    latitude: null,
-    longitude: null,
+    region: {
+      latitude: null,
+      longitude: null,
+      latitudeDelta: null,
+      longitudeDelta: null
+    },
     locations: []
   }
 
@@ -26,7 +30,7 @@ export default class App extends React.Component {
 
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude, longitude }}) => {
-        this.setState({ latitude: latitude, longitude: longitude }),
+        this.setState({ region: { latitude: latitude, longitude: longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}),
         (err) => console.warn(err)
 
         fetch(PLACE_API + latitude + ',' + longitude + '&radius=3000&type=store&key=' + API_KEY)
@@ -39,10 +43,10 @@ export default class App extends React.Component {
       });
   }
 
-  async getCoords(name) {
-    const json = await Geocoder.from(name);
-    return json.results[0].geometry.location;
-  }
+  // async getCoords(name) {
+  //   const json = await Geocoder.from(name);
+  //   return json.results[0].geometry.location;
+  // }
 
   renderMarkers = () => {
     const { locations } = this.state
@@ -74,9 +78,9 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { latitude, longitude, locations } = this.state
+    const { region, locations } = this.state
 
-    if (latitude) {
+    if (region.latitude) {
       return (
         <MapView
           provider = { PROVIDER_GOOGLE }
@@ -84,12 +88,8 @@ export default class App extends React.Component {
           style={{ flex: 1 }}
           customMapStyle={ RetroMapStyles }
           moveOnMarkerPress={true}
-          initialRegion = {{
-            latitude,
-            longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421
-          }}
+          region = { region }
+          minZoomLevel={ 10 }
           >
           {locations != undefined && this.renderMarkers()}
         </MapView>
