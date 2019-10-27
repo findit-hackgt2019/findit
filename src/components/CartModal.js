@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, StyleSheet, View, Text, Button, SectionList } from 'react-native';
 import QRCode from 'react-qr-code';
 import CartItem from "./CartItem";
+import { addOrder, editOrder } from "../actions/orders";
 
 const styles = StyleSheet.create({
     container: {
@@ -21,8 +22,37 @@ const styles = StyleSheet.create({
 });
 
 export default class CartModal extends React.PureComponent {
-    render() {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      orderId: null
+    };
+  }
+
+  async componentDidUpdate(prevProps, prevState, snapshot) {
+      if (prevProps.modalVisible !== this.props.modalVisible) {
+          if (this.state.orderId == null) {
+              await addOrder({
+                created: new Date(),
+                items: this.props.cartItems
+              })
+                  .then((order) => {
+                      this.setState({
+                          orderId: order._id
+                      });
+                  });
+          } else {
+              await editOrder(this.state.orderId, {
+                  items: this.props.cartItems
+              });
+          }
+      }
+  }
+
+  render() {
         const { cartItems, toggleModalVisible, modalVisible, removeFromCart } = this.props;
+        const { orderId } = this.state;
 
         let total = 0;
         for (let i = 0; i < cartItems.length; i++) {
@@ -45,8 +75,8 @@ export default class CartModal extends React.PureComponent {
                 <Text style={styles.paragraph}>
                   Shopping Cart
                 </Text>
-                {(modalVisible) && (
-                  <QRCode value={JSON.stringify(cartItems)} />
+                {(modalVisible && orderId != null) && (
+                  <QRCode value={orderId} />
                 )}
                 <SectionList
                   style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
