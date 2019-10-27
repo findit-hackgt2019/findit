@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     },
     price: {
         paddingBottom: 12,
+        fontSize: 20,
         fontFamily: 'Montserrat-Bold'
     }
 });
@@ -102,7 +103,7 @@ export default class CartModal extends React.PureComponent {
                   )}
                 />
                 <View style={{alignItems: 'center'}}>
-                  <Text styles={{paddingBottom: 12, fontFamily: 'Montserrat-Bold'}}>
+                  <Text style={styles.price}>
                     Total Price - ${total}
                   </Text>
                   <View style= {{ margin: 10 }}>
