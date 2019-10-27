@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, Keyboard, Alert } from 'react-native';
 import { Input, InputGroup } from 'native-base';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import RetroMapStyles from './assets/MapStyles/RetroMapStyles.json';
+import MapStyle from './assets/MapStyles/MapStyle.json';
 import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
 import List from './src/components/List';
@@ -164,7 +164,7 @@ export default class App extends React.Component {
             provider={PROVIDER_GOOGLE}
             showsUserLocation
             style={{ flex: 1 }}
-            customMapStyle={ RetroMapStyles }
+            customMapStyle={ MapStyle }
             initialRegion={ region }
             minZoomLevel={ 13 }
             maxZoomLevel={ 15 }
