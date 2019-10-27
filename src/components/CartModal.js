@@ -1,31 +1,26 @@
 import React from 'react';
-import { Modal, StyleSheet, View, Text, Button, FlatList } from 'react-native';
+import { Modal, StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import QRCode from 'react-qr-code';
 import CartItem from "./CartItem";
 import { addOrder, editOrder } from "../actions/orders";
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 30
-    },
-    paragraph: {
-        padding: 20,
-        textAlign: 'center'
+      flex: 1,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: 15
     },
     heading: {
-        marginTop: 20,
-        padding: 25,
-        textAlign: 'center',
-        fontSize: 25,
-        fontWeight: 'bold',          
+      marginVertical: 20,
+      textAlign: 'center',
+      fontSize: 25,
+      fontFamily: 'Montserrat-Bold'    
     },
     price: {
         paddingBottom: 12,
+        fontFamily: 'Montserrat-Bold'
     }
 });
 
@@ -82,7 +77,7 @@ export default class CartModal extends React.PureComponent {
                   <QRCode value={orderId} />
                 )}
                 {(cartItems.length == 0) && (
-                  <Text>
+                  <Text style={{ marginTop: 20, fontFamily: 'Montserrat' }}>
                     Your shopping list is empty.
                   </Text>
                 )}
@@ -103,12 +98,12 @@ export default class CartModal extends React.PureComponent {
                 <Text styles={styles.price}>
                   Total Price - ${total}
                 </Text>
-                <View style= {{margin: 20, padding: 5, borderColor: '#0c7529', borderWidth: 1}}>
-                <Button
-                  title= "Close Shopping Cart"
+                <View style= {{ margin: 10 }}>
+                <TouchableOpacity
                   onPress={toggleModalVisible}
-                  color ='#0c7529'
-               />
+                  style={{ borderRadius: 50, backgroundColor: '#6934ff', paddingHorizontal: 60, paddingVertical: 15 }}>
+                  <Text style={{ fontSize: 16, color: '#fff', fontFamily: 'Montserrat-Bold' }}>Close Shopping Cart</Text>
+                </TouchableOpacity>
                 </View>
               </View>
             </Modal>

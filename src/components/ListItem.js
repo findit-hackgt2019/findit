@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Button, Alert} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 
 const styles = StyleSheet.create({
     container : {
@@ -7,17 +7,21 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         textAlign: 'center',
-        padding: 20
+        padding: 20,
+        color: '#fff'
     },
     priceButton: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center'
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     price: {
-      marginLeft: 12,
-      marginRight: 12
+        marginLeft: 12,
+        marginRight: 12,
+        color: '#fff',
+        fontFamily: 'Montserrat'
+
     }
 });
 
@@ -35,16 +39,16 @@ class ListItem extends React.PureComponent {
 
         return (
             <View style={styles.container}>
-                <Text ellipsizeMode='tail' style={{ flex: 1, fontWeight:'600' }}>{name}</Text>
+                <Text ellipsizeMode='tail' style={{ flex: 1, color: '#fff', fontFamily: 'Montserrat-Bold' }}>{name}</Text>
                 <View style={styles.priceButton}>
-                  <Text style={styles.price}>
-                      ${displayPrice}
-                  </Text>
-                  <Button
-                      title="Add to Cart"
-                      onPress={this.onPressButton}
-                      color='#6934ff'
-                  />
+                    <Text style={styles.price}>
+                        ${displayPrice}
+                    </Text>
+                    <TouchableOpacity
+                        onPress={this.onPressButton}
+                        style={{ borderRadius: 50, backgroundColor: '#ff891e', paddingHorizontal: 10, paddingVertical: 10 }}>
+                        <Text style={{ fontSize: 12, color: '#fff', fontFamily: 'Montserrat-Bold' }}>Add to Cart</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         )

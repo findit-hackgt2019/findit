@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Keyboard, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Keyboard, Alert } from 'react-native';
 import { Input, InputGroup } from 'native-base';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MapStyle from './assets/MapStyles/MapStyle.json';
@@ -9,6 +9,7 @@ import List from './src/components/List';
 import CartModal from './src/components/CartModal';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getAllItems } from "./src/actions/api";
+import * as Font from 'expo-font';
 
 const PLACE_API = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=';
 const API_KEY = 'AIzaSyCAjd5RY-n2Tm0Qm4wcDFYUuEOvJkX3bqI';
@@ -29,7 +30,8 @@ export default class App extends React.Component {
     showItems: false,
     showFiltered: false,
     query: '',
-    currentStore: null
+    currentStore: null,
+    fontLoaded: false
   };
 
   toggleModalVisible = () => {
@@ -110,6 +112,16 @@ export default class App extends React.Component {
         storeItems
       });
     }
+
+    await Font.loadAsync({
+      'Montserrat':require('./assets/fonts/Montserrat-Medium.ttf'),
+      'Montserrat-Bold':require('./assets/fonts/Montserrat-Bold.ttf')
+    })
+
+    this.setState({fontLoaded: true}),
+    (err) => console.warn(err);
+
+
   }
 
   markerClick = (name) => {
@@ -155,9 +167,9 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { region, locations, modalVisible, storeItems, showItems, filteredItems, showFiltered, currentStore } = this.state;
+    const { region, locations, modalVisible, storeItems, showItems, filteredItems, showFiltered, currentStore, fontLoaded } = this.state;
 
-    if (region.latitude) {
+    if (region.latitude && fontLoaded) {
       return (
         <View style={{ flex: 1 }}>
           <MapView
@@ -209,22 +221,25 @@ export default class App extends React.Component {
             </View>
           </View>
           {(showFiltered) && (currentStore) && (
-             <View style={{ flex: 3, display: 'flex', flexDirection: 'column' }}>
-             <List
-               addToCart={this.addToCart}
-               items={filteredItems}
-               name={currentStore}
-             />
-             <Button
-               title= "View Shopping Cart"
-               onPress = {this.toggleModalVisible}
-             />
-             <CartModal
-               removeFromCart={this.removeFromCart}
-               cartItems={this.state.selectedItems}
-               toggleModalVisible={this.toggleModalVisible}
-               modalVisible={modalVisible}
-             />
+          <View style={{ flex: 3, display: 'flex', flexDirection: 'column', backgroundColor: '#02063a' }}>
+            <List
+              addToCart={this.addToCart}
+              items={filteredItems}
+              name={currentStore}
+            />
+            <View style= {{margin: 20}}>
+              <TouchableOpacity
+                onPress={this.toggleModalVisible}
+                style={{ alignItems: 'center', borderRadius: 50, backgroundColor: '#6934ff', paddingHorizontal: 30, paddingVertical: 15 }}>
+                <Text style={{ fontSize: 16, color: '#fff', fontFamily: 'Montserrat-Bold' }}>View Shopping Cart</Text>
+              </TouchableOpacity>
+            </View>
+            <CartModal
+              removeFromCart={this.removeFromCart}
+              cartItems={this.state.selectedItems}
+              toggleModalVisible={this.toggleModalVisible}
+              modalVisible={modalVisible}
+            />
            </View>
           )}
 
@@ -236,12 +251,11 @@ export default class App extends React.Component {
                 name={currentStore}
               />
               <View style= {{margin: 20}}>
-              <Button
-                title= "View Shopping Cart"
-                onPress = {this.toggleModalVisible}
-                color ='#6934ff'
-                style={{ borderRadius: 50 }}
-              />
+                <TouchableOpacity
+                  onPress={this.toggleModalVisible}
+                  style={{ alignItems: 'center', borderRadius: 50, backgroundColor: '#6934ff', paddingHorizontal: 30, paddingVertical: 15 }}>
+                  <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 16, color: '#fff' }}>View Shopping Cart</Text>
+                </TouchableOpacity>
               </View>
               <CartModal
                 removeFromCart={this.removeFromCart}
@@ -264,7 +278,7 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#02063a',
+    backgroundColor: '#fafafc',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -272,29 +286,31 @@ const styles = StyleSheet.create({
     backgroundColor: "#02063a",
     padding: 5,
     opacity: 0.8,
-    borderRadius: 5
+    borderRadius: 5,
   },
   calloutText: {
     fontSize: 8,
     padding: 2,
     fontWeight: "bold",
-    color: "#fff"
+    color: "#fff",
+    fontFamily: 'Montserrat-Bold'
   },
   searchBar:{
     top: 0,
     position: "absolute",
-    width: "100%"
+    width: "100%",
   },
   inputSearch:{
-      fontSize: 18
+    fontSize: 18,
+    fontFamily: 'Montserrat'
   },
   inputWrapper:{
-      paddingLeft: 10,
-      marginLeft:15,
-      marginRight:15,
-      marginTop:30,
-      marginBottom:0,
-      backgroundColor:"#fff",
-      borderRadius:7
+    paddingLeft: 10,
+    marginLeft:15,
+    marginRight:15,
+    marginTop:30,
+    marginBottom:0,
+    backgroundColor:"#fff",
+    borderRadius:7,
   }
 });

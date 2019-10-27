@@ -4,19 +4,19 @@ import ListItem from './ListItem';
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#02063a',
-        display: 'flex'
-    },
-    flexOne: {
-        flex: 1
+      flex: 1,
+      backgroundColor: '#02063a',
+      display: 'flex',
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
+      color: '#fff',
     },
     header: {
       padding: 20,
       textAlign: 'center',
       fontSize: 18,
-      fontWeight: "600",
-      color: '#fff'
+      color: '#8489aa',
+      fontFamily: 'Montserrat-Bold'
     }
 });
 
@@ -28,7 +28,7 @@ class List extends React.PureComponent {
           <View style={styles.container}>
               <Text style={styles.header}>{name}</Text>
               <FlatList
-                style={styles.flexOne}
+                style={{ flex: 1 }}
                 data={items}
                 keyExtractor={(item) => item.name}
                 renderItem={({ item }) => (

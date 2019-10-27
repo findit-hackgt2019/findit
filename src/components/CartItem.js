@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Button, Alert} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between',
       alignItems: 'center',
       textAlign: 'center',
-      padding: 20
+      padding: 10
     },
     priceButton: {
       display: 'flex',
@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
     },
     price: {
       marginLeft: 12,
-      marginRight: 12
+      marginRight: 12,
+      fontFamily: 'Montserrat'
     }
 });
 
@@ -34,18 +35,18 @@ class CartItem extends React.PureComponent {
 
         return (
             <View style={styles.container}>
-                <Text>
+                <Text ellipsizeMode='tail' style={{ flex: 1, fontFamily: 'Montserrat-Bold'}}>
                     {quantity} x {name}
                 </Text>
                 <View style={styles.priceButton}>
                     <Text style={styles.price}>
                         ${curPrice.toFixed(2)}
                     </Text>
-                    <Button
-                        title="Remove"
+                    <TouchableOpacity
                         onPress={this.onPressButton}
-                        color= '#D00A0A'
-                    />
+                        style={{ borderRadius: 50, backgroundColor: '#ff891e', paddingHorizontal: 10, paddingVertical: 10 }}>
+                        <Text style={{ fontSize: 12, color: '#fff', fontFamily: 'Montserrat-Bold' }}>Remove</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         )
