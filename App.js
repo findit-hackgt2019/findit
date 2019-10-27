@@ -6,6 +6,7 @@ import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
 import List from './src/components/List';
 import CartModal from './src/components/CartModal';
+import SearchBar from './src/components/SearchBar';
 import { getAllItems } from "./src/actions/api";
 
 const PLACE_API = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=';
@@ -161,6 +162,7 @@ export default class App extends React.Component {
               this.renderMarkers()
             )}
           </MapView>
+          <SearchBar />
           {(showItems) && (
             <View style={{ flex: 3, display: 'flex', flexDirection: 'column' }}>
               <List
