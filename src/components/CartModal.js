@@ -10,14 +10,18 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 30
     },
     paragraph: {
         padding: 20,
         textAlign: 'center'
     },
-    price: {
-        paddingBottom: 12
+    header: {
+      padding: 20,
+      textAlign: 'center',
+      fontSize: 18,
+      fontWeight: "600"
     }
 });
 
@@ -61,49 +65,46 @@ export default class CartModal extends React.PureComponent {
         total = total.toFixed(2);
 
         const data = [{
-          title: 'Store Items',
+          title: 'Shopping Cart',
           data: cartItems
         }];
 
         return (
-            <Modal
-              animationType="slide"
-              transparent={false}
-              visible={modalVisible}
-            >
-              <View style={styles.container}>
-                <Text style={styles.paragraph}>
-                  Shopping Cart
-                </Text>
-                {(modalVisible && orderId != null) && (
-                  <QRCode value={orderId} />
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={modalVisible}
+          >
+            <View style={styles.container}>
+              {(modalVisible && orderId != null) && (
+                <QRCode value={orderId} />
+              )}
+              <SectionList
+                style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+                sections={data}
+                keyExtractor={(item) => item.name}
+                renderItem={({ item }) => (
+                  <CartItem
+                    key={item.name}
+                    name={item.name}
+                    price={item.price}
+                    quantity={item.quantity}
+                    removeFromCart={removeFromCart}
+                  />
                 )}
-                <SectionList
-                  style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-                  sections={data}
-                  keyExtractor={(item) => item.name}
-                  renderItem={({ item }) => (
-                    <CartItem
-                      key={item.name}
-                      name={item.name}
-                      price={item.price}
-                      quantity={item.quantity}
-                      removeFromCart={removeFromCart}
-                    />
-                  )}
-                  renderSectionHeader={({ section: { title } }) => (
-                    <Text style={styles.paragraph}>{title}</Text>
-                  )}
-                />
-                <Text styles={styles.price}>
-                  Total Price - ${total}
-                </Text>
-                <Button
-                  title= "Close Shopping Cart"
-                  onPress={toggleModalVisible}
-               />
-              </View>
-            </Modal>
+                renderSectionHeader={({ section: { title } }) => (
+                  <Text style={styles.header}>{title}</Text>
+                )}
+              />
+              <Text styles={styles.header, {fontWeight: '600'}}>
+                Total Price - ${total}
+              </Text>
+              <Button
+                title= "Close Shopping Cart"
+                onPress={toggleModalVisible}
+              />
+            </View>
+          </Modal>
         )
     }
 }

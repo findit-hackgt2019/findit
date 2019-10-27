@@ -24,21 +24,21 @@ const styles = StyleSheet.create({
 class ListItem extends React.PureComponent {
     onPressButton = () => {
         const { name, price, quantity, addToCart } = this.props;
-
         addToCart({name, price, quantity});
         Alert.alert('Item Added');
     };
 
     render() {
         const { name, price } = this.props;
+
+        const displayPrice = price.toFixed(2);
+
         return (
             <View style={styles.container}>
-                <Text>
-                    {name}
-                </Text>
+                <Text ellipsizeMode='tail' style={{ flex: 1, fontWeight:'600' }}>{name}</Text>
                 <View style={styles.priceButton}>
                   <Text style={styles.price}>
-                      ${price}
+                      ${displayPrice}
                   </Text>
                   <Button
                       title="Add to Cart"
