@@ -157,8 +157,6 @@ export default class App extends React.Component {
   render() {
     const { region, locations, modalVisible, storeItems, showItems, filteredItems, showFiltered, currentStore } = this.state;
 
-    console.log('storeItems', storeItems)
-
     if (region.latitude) {
       return (
         <View style={{ flex: 1 }}>
