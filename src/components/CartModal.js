@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 
 export default class CartModal extends React.Component {
     render() {
-        const {cartItems, toggleModalVisible, modalVisible, removeFromCart} = this.props;
+        const { cartItems, toggleModalVisible, modalVisible, removeFromCart } = this.props;
 
         let total = 0;
         for (let i = 0; i < cartItems.length; i++) {

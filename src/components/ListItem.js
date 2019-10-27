@@ -16,16 +16,17 @@ const styles = StyleSheet.create({
 });
 
 class ListItem extends React.Component {
-    onPressButton=() => {
-        const {name, price, quantity, addToCart} = this.props;
+    onPressButton = () => {
+        const { name, price, quantity, addToCart } = this.props;
+
         addToCart({name, price, quantity});
         Alert.alert('Item Added');
-    }
+    };
 
     render() {
-        const {name, price} = this.props;
+        const { name, price } = this.props;
         return (
-            <View style={styles.itemAttribute}> 
+            <View style={styles.itemAttribute}>
                 <Text>
                     {name}
                 </Text>

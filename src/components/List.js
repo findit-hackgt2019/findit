@@ -15,20 +15,22 @@ const styles = StyleSheet.create({
 
 class List extends React.Component {
     render() {
-        const {items, addToCart} = this.props;
+        const { items, addToCart } = this.props;
+
         return (
             <ScrollView style={styles.container}>
                 <Text style={styles.paragraph}>
                     Store Items
                 </Text>
                 {items.map (item =>
-                <ListItem
-                  key={item.name}
-                  name={item.name}
-                  price={item.price}
-                  quantity={item.quantity}
-                  addToCart={addToCart}
-                />)}
+                    <ListItem
+                      key={item.name}
+                      name={item.name}
+                      price={item.price}
+                      quantity={item.quantity}
+                      addToCart={addToCart}
+                    />
+                )}
             </ScrollView>
         )
     }

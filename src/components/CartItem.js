@@ -12,21 +12,22 @@ const styles = StyleSheet.create({
 });
 
 class CartItem extends React.Component {
-    onPressButton=() => {
+    onPressButton = () => {
         const {name, removeFromCart} = this.props;
         removeFromCart(name);
         Alert.alert('Item Removed');
-    }
+    };
 
     render() {
         const {name, price, quantity} = this.props;
+
         return (
-            <View style={styles.itemAttribute}> 
+            <View style={styles.itemAttribute}>
                 <Text>
                     {quantity} x {name}
                 </Text>
                 <Text>
-                    ${quantity*price}
+                    ${quantity * price}
                 </Text>
                 <Button
                     title="Remove"

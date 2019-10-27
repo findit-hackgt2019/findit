@@ -13,7 +13,7 @@ class Greeting extends React.Component {
         return (
             <View>
                 <Text style={styles.paragraph}>
-                Hey there. Choose a store and start shopping!
+                  Hey there. Choose a store and start shopping!
                 </Text>
             </View>
         )
