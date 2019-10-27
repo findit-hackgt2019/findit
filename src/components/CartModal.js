@@ -17,11 +17,15 @@ const styles = StyleSheet.create({
         padding: 20,
         textAlign: 'center'
     },
-    header: {
-      padding: 20,
-      textAlign: 'center',
-      fontSize: 18,
-      fontWeight: "600"
+    heading: {
+        marginTop: 20,
+        padding: 25,
+        textAlign: 'center',
+        fontSize: 25,
+        fontWeight: 'bold',          
+    },
+    price: {
+        paddingBottom: 12,
     }
 });
 
@@ -65,11 +69,16 @@ export default class CartModal extends React.PureComponent {
         total = total.toFixed(2);
 
         const data = [{
+<<<<<<< HEAD
           title: 'Shopping Cart',
+=======
+          title: '',
+>>>>>>> b78ffed319a006ac31af4458967d7b46e5920dfb
           data: cartItems
         }];
 
         return (
+<<<<<<< HEAD
           <Modal
             animationType="slide"
             transparent={false}
@@ -105,6 +114,53 @@ export default class CartModal extends React.PureComponent {
               />
             </View>
           </Modal>
+=======
+            <Modal
+              animationType="slide"
+              transparent={false}
+              visible={modalVisible}
+            >
+              <View style={styles.container}>
+                <Text style={styles.heading}>
+                  Shopping Cart
+                </Text>
+                {(cartItems.length != 0) && (modalVisible) && (
+                   <QRCode value={JSON.stringify(cartItems)} />
+                )}
+              {(cartItems.length == 0) && (
+                <Text>
+                  Your shopping list is empty.
+                </Text>)}
+                <SectionList
+                  style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+                  sections={data}
+                  keyExtractor={(item) => item.name}
+                  renderItem={({ item }) => (
+                    <CartItem
+                      key={item.name}
+                      name={item.name}
+                      price={item.price}
+                      quantity={item.quantity}
+                      removeFromCart={removeFromCart}
+                    />
+                  )}
+                  renderSectionHeader={({ section: { title } }) => (
+                    <Text style={styles.paragraph}>{title}</Text>
+                  )}
+                />
+                <Text styles={styles.price}>
+                  Total Price - ${total}
+                </Text>
+                <View style= {{margin: 20, padding: 5, borderColor: '#0c7529', borderWidth: 1}}>
+                <Button
+                  title= "Close Shopping Cart"
+                  onPress={toggleModalVisible}
+                  color ='#0c7529'
+               />
+                </View>
+              </View>
+            </Modal>
+>>>>>>> b78ffed319a006ac31af4458967d7b46e5920dfb
         )
     }
 }
