@@ -16,8 +16,15 @@ const styles = StyleSheet.create({
         padding: 20,
         textAlign: 'center'
     },
+    heading: {
+        marginTop: 20,
+        padding: 25,
+        textAlign: 'center',
+        fontSize: 25,
+        fontWeight: 'bold',          
+    },
     price: {
-        paddingBottom: 12
+        paddingBottom: 12,
     }
 });
 
@@ -61,7 +68,7 @@ export default class CartModal extends React.PureComponent {
         total = total.toFixed(2);
 
         const data = [{
-          title: 'Store Items',
+          title: '',
           data: cartItems
         }];
 
@@ -72,12 +79,16 @@ export default class CartModal extends React.PureComponent {
               visible={modalVisible}
             >
               <View style={styles.container}>
-                <Text style={styles.paragraph}>
+                <Text style={styles.heading}>
                   Shopping Cart
                 </Text>
-                {(modalVisible && orderId != null) && (
-                  <QRCode value={orderId} />
-                )}
+                {(cartItems.length != 0) && (modalVisible) && (
+                   <QRCode value={JSON.stringify(cartItems)} />
+                )}
+              {(cartItems.length == 0) && (
+                <Text>
+                  Your shopping list is empty.
+                </Text>)}
                 <SectionList
                   style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
                   sections={data}
@@ -98,10 +109,13 @@ export default class CartModal extends React.PureComponent {
                 <Text styles={styles.price}>
                   Total Price - ${total}
                 </Text>
+                <View style= {{margin: 20, padding: 5, borderColor: '#0c7529', borderWidth: 1}}>
                 <Button
                   title= "Close Shopping Cart"
                   onPress={toggleModalVisible}
+                  color ='#0c7529'
                />
+                </View>
               </View>
             </Modal>
         )

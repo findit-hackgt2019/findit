@@ -236,10 +236,13 @@ export default class App extends React.Component {
                 items={storeItems}
                 name={currentStore}
               />
-              <Button
-                title= "View Shopping Cart"
-                onPress = {this.toggleModalVisible}
-              />
+              <View style= {{margin: 20, padding: 5, borderColor: '#0c7529', borderWidth: 1}}>
+                <Button
+                  title= "View Shopping Cart"
+                  onPress = {this.toggleModalVisible}
+                  color ='#0c7529'
+                />
+              </View>
               <CartModal
                 removeFromCart={this.removeFromCart}
                 cartItems={this.state.selectedItems}

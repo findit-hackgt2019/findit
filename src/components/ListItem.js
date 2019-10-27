@@ -43,6 +43,7 @@ class ListItem extends React.PureComponent {
                   <Button
                       title="Add to Cart"
                       onPress={this.onPressButton}
+                      color= '#169038'
                   />
                 </View>
             </View>

@@ -44,6 +44,7 @@ class CartItem extends React.PureComponent {
                     <Button
                         title="Remove"
                         onPress={this.onPressButton}
+                        color= '#D00A0A'
                     />
                 </View>
             </View>
