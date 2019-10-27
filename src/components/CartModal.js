@@ -5,13 +5,13 @@ import CartItem from "./CartItem";
 import { addOrder, editOrder } from "../actions/orders";
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      margin: 15
-    },
+  container: {
+    flex: 1,
+    display: 'flex',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    margin: 15
+  },
     heading: {
       marginVertical: 20,
       textAlign: 'center',
@@ -73,7 +73,8 @@ export default class CartModal extends React.PureComponent {
                 <Text style={styles.heading}>
                   Shopping Cart
                 </Text>
-                {(modalVisible && orderId != null) && (
+                <View style={{alignItems: 'center'}}>
+                {(modalVisible && cartItems.length != 0) && (
                   <QRCode value={orderId} />
                 )}
                 {(cartItems.length == 0) && (
@@ -81,6 +82,7 @@ export default class CartModal extends React.PureComponent {
                     Your shopping list is empty.
                   </Text>
                 )}
+                </View>
                 <FlatList
                   style={{ flex: 1 }}
                   data={cartItems}
@@ -95,15 +97,17 @@ export default class CartModal extends React.PureComponent {
                     />
                   )}
                 />
-                <Text styles={styles.price}>
-                  Total Price - ${total}
-                </Text>
-                <View style= {{ margin: 10 }}>
-                <TouchableOpacity
-                  onPress={toggleModalVisible}
-                  style={{ borderRadius: 50, backgroundColor: '#6934ff', paddingHorizontal: 60, paddingVertical: 15 }}>
-                  <Text style={{ fontSize: 16, color: '#fff', fontFamily: 'Montserrat-Bold' }}>Close Shopping Cart</Text>
-                </TouchableOpacity>
+                <View style={{alignItems: 'center'}}>
+                  <Text styles={styles.price}>
+                    Total Price - ${total}
+                  </Text>
+                  <View style= {{ margin: 10 }}>
+                  <TouchableOpacity
+                    onPress={toggleModalVisible}
+                    style={{ borderRadius: 50, backgroundColor: '#6934ff', paddingHorizontal: 60, paddingVertical: 15 }}>
+                    <Text style={{ fontSize: 16, color: '#fff', fontFamily: 'Montserrat-Bold' }}>Close Shopping Cart</Text>
+                  </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </Modal>
