@@ -28,7 +28,8 @@ export default class App extends React.Component {
     filteredItems: [],
     showItems: false,
     showFiltered: false,
-    query: ''
+    query: '',
+    currentStore: null
   };
 
   toggleModalVisible = () => {
@@ -111,9 +112,10 @@ export default class App extends React.Component {
     }
   }
 
-  markerClick = () => {
+  markerClick = (name) => {
     this.setState((prevState) => ({
-      showItems: !prevState.showItems
+      showItems: !prevState.showItems,
+      currentStore: name
     }));
   };
 
@@ -122,6 +124,8 @@ export default class App extends React.Component {
       this.setState({ showItems: false });
     if (this.state.showFiltered)
       this.setState({ showFiltered: false });
+    if (this.state.currentStore)
+      this.setState({ currentStore: null })
     Keyboard.dismiss()
   }
 
@@ -140,7 +144,7 @@ export default class App extends React.Component {
         <Marker
           key={idx}
           coordinate={{ latitude: lat, longitude: lng }}
-          onPress={this.markerClick}
+          onPress={() => this.markerClick(name)}
         >
             <View style={styles.callout}>
               <Text style={styles.calloutText}>{name}</Text>
@@ -151,7 +155,7 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { region, locations, modalVisible, storeItems, showItems, filteredItems, showFiltered } = this.state;
+    const { region, locations, modalVisible, storeItems, showItems, filteredItems, showFiltered, currentStore } = this.state;
 
     if (region.latitude) {
       return (
@@ -183,15 +187,20 @@ export default class App extends React.Component {
                     if (query == '') {
                       this.setState({showFiltered: false});
                     }
-                    if (storeItems) {
-                      if (!showFiltered) this.setState({showFiltered: true});
-                      if (showItems) this.setState({showItems: false});
-                      this.setState({
-                        filteredItems: storeItems.filter((item) => {
-                          return item.name.toLowerCase().includes(query.toLowerCase());
-                        })
-                      });
-                    }
+                    if (!currentStore && query != '') {
+                      alert("Please Select a Store");
+                      this.setState({ query: '' })
+                    } else {
+                      if (storeItems) {
+                        if (!showFiltered) this.setState({showFiltered: true});
+                        if (showItems) this.setState({showItems: false});
+                        this.setState({
+                          filteredItems: storeItems.filter((item) => {
+                            return item.name.toLowerCase().includes(query.toLowerCase());
+                          })
+                        });
+                      }
+                    };
                   }}
                   value = { this.state.query }
                   placeholder="What can I find for you?"
@@ -200,11 +209,12 @@ export default class App extends React.Component {
               </InputGroup>
             </View>
           </View>
-          {(showFiltered) && (
+          {(showFiltered) && (currentStore) && (
              <View style={{ flex: 3, display: 'flex', flexDirection: 'column' }}>
              <List
                addToCart={this.addToCart}
                items={filteredItems}
+               name={currentStore}
              />
              <Button
                title= "View Shopping Cart"
@@ -219,11 +229,12 @@ export default class App extends React.Component {
            </View>
           )}
 
-          {(showItems) && (
+          {(showItems) && (currentStore) && (
             <View style={{ flex: 3, display: 'flex', flexDirection: 'column' }}>
               <List
                 addToCart={this.addToCart}
                 items={storeItems}
+                name={currentStore}
               />
               <Button
                 title= "View Shopping Cart"
