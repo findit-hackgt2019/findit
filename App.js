@@ -170,7 +170,6 @@ export default class App extends React.Component {
             initialRegion={ region }
             minZoomLevel={ 13 }
             maxZoomLevel={ 15 }
-            loadingEnabled={ true }
             zoomTapEnabled={ false }
             onPress={ this.mapClick }
           >
@@ -181,7 +180,7 @@ export default class App extends React.Component {
           <View style={styles.searchBar}>
             <View style={styles.inputWrapper} >
               <InputGroup borderType='rounded' >
-                <Icon name="search" size={15} color="#a9a9a9" />
+                <Icon name="search" size={15} color="#6732ff" />
                 <Input
                   style={styles.inputSearch}
                   onChangeText={ (query) => {
@@ -266,12 +265,12 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#02063a',
     alignItems: 'center',
     justifyContent: 'center',
   },
   callout: {
-    backgroundColor: "#f7fffc",
+    backgroundColor: "#02063a",
     padding: 5,
     opacity: 0.8,
     borderRadius: 5
@@ -280,7 +279,7 @@ const styles = StyleSheet.create({
     fontSize: 8,
     padding: 2,
     fontWeight: "bold",
-    color: "#000"
+    color: "#fff"
   },
   searchBar:{
     top: 0,
