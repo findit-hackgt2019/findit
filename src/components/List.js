@@ -14,12 +14,18 @@ const styles = StyleSheet.create({
     paragraph: {
         padding: 20,
         textAlign: 'center'
+    },
+    header: {
+      padding: 20,
+      textAlign: 'center',
+      fontSize: 18,
+      fontWeight: "600"
     }
 });
 
 class List extends React.PureComponent {
     render() {
-        const { items, addToCart } = this.props;
+        const { items, addToCart, name } = this.props;
 
         const data = [{
             title: 'Store Items',
@@ -28,7 +34,7 @@ class List extends React.PureComponent {
 
         return (
           <View style={styles.container}>
-              <Text style={styles.paragraph}>Store Items</Text>
+              <Text style={styles.header}>{name}</Text>
               <SectionList
                 style={styles.container}
                 sections={data}
