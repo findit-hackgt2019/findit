@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, Button, Keyboard, Alert } from 'react-native';
 import { Input, InputGroup } from 'native-base';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import RetroMapStyles from './assets/MapStyles/RetroMapStyles.json';
@@ -189,7 +189,7 @@ export default class App extends React.Component {
                     }
                     if (!currentStore && query.length == 1) {
                       Keyboard.dismiss();
-                      alert("Please Select a Store");
+                      Alert.alert("Please Select a Store");
                       this.setState({ query: '' });
                     } else {
                       if (storeItems) {
@@ -256,9 +256,7 @@ export default class App extends React.Component {
     }
 
     return (
-      <View style= {{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Change your location permissions!</Text>
-      </View>
+      <View />
     );
   }
 }

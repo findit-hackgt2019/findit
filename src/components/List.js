@@ -28,7 +28,7 @@ class List extends React.PureComponent {
         const { items, addToCart, name } = this.props;
 
         const data = [{
-            title: 'Store Items',
+            title: 'Shopping Cart',
             data: items
         }];
 
