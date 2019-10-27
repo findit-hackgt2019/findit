@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     margin: 15
   },
     heading: {
-      marginVertical: 20,
+      marginVertical: 25,
       textAlign: 'center',
       fontSize: 25,
       fontFamily: 'Montserrat-Bold'    
@@ -73,8 +73,8 @@ export default class CartModal extends React.PureComponent {
                 <Text style={styles.heading}>
                   Shopping Cart
                 </Text>
-                <View style={{alignItems: 'center'}}>
-                {(modalVisible && cartItems.length != 0) && (
+                <View style={{alignItems: 'center', marginBottom: 25}}>
+                {(modalVisible && (cartItems.length != 0)) && (
                   <QRCode value={orderId} />
                 )}
                 {(cartItems.length == 0) && (
@@ -98,7 +98,7 @@ export default class CartModal extends React.PureComponent {
                   )}
                 />
                 <View style={{alignItems: 'center'}}>
-                  <Text styles={styles.price}>
+                  <Text styles={{paddingBottom: 12, fontFamily: 'Montserrat-Bold'}}>
                     Total Price - ${total}
                   </Text>
                   <View style= {{ margin: 10 }}>
