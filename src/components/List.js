@@ -1,12 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, SectionList, Text} from 'react-native';
+import { StyleSheet, View, FlatList, Text} from 'react-native';
 import ListItem from './ListItem';
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column'
+        flex: 1
     },
     flexOne: {
         flex: 1
@@ -27,17 +25,12 @@ class List extends React.PureComponent {
     render() {
         const { items, addToCart, name } = this.props;
 
-        const data = [{
-            title: 'Shopping Cart',
-            data: items
-        }];
-
         return (
           <View style={styles.container}>
               <Text style={styles.header}>{name}</Text>
-              <SectionList
+              <FlatList
                 style={styles.container}
-                sections={data}
+                items={items}
                 keyExtractor={(item) => item.name}
                 renderItem={({ item }) => (
                   <ListItem
