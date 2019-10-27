@@ -64,10 +64,20 @@ export default class App extends React.Component {
 
   removeFromCart = (item_name) => {
     const { selectedItems } = this.state;
+    const items_copy = [...selectedItems];
+
+    const reduced = items_copy
+      .map(item => {
+        if (item.name === item_name) {
+          item.quantity--;
+        }
+        return item;
+      })
+      .filter(item => item.quantity > 0)
 
     this.setState({
-      selectedItems: selectedItems.filter((item) => item.name !== item_name)
-    });
+      selectedItems: reduced
+    })
   };
 
   async componentDidMount() {
@@ -198,7 +208,7 @@ export default class App extends React.Component {
                     if (query == '') {
                       this.setState({showFiltered: false});
                     }
-                    if (!currentStore && query.length == 1) {
+                    if (!currentStore) {
                       Keyboard.dismiss();
                       Alert.alert("Please Select a Store");
                       this.setState({ query: '' });

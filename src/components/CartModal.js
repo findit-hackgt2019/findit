@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default class CartModal extends React.PureComponent {
+export default class CartModal extends React.Component {
   constructor(props) {
     super(props);
 

@@ -22,11 +22,12 @@ const styles = StyleSheet.create({
     }
 });
 
-class CartItem extends React.PureComponent {
+class CartItem extends React.Component {
     onPressButton = () => {
         const { name, removeFromCart } = this.props;
         removeFromCart(name);
-        Alert.alert('Item Removed');
+        Alert.alert('Item Removed!');
+        this.forceUpdate();
     };
 
     render() {
