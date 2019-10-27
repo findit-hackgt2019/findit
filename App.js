@@ -1,12 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Keyboard } from 'react-native';
+import { Input, InputGroup } from 'native-base';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import RetroMapStyles from './assets/MapStyles/RetroMapStyles.json';
 import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
 import List from './src/components/List';
 import CartModal from './src/components/CartModal';
-import SearchBar from './src/components/SearchBar';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { getAllItems } from "./src/actions/api";
 
 const PLACE_API = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=';
@@ -21,13 +22,13 @@ export default class App extends React.Component {
       longitudeDelta: null
     },
     locations: [],
-    latitude: null,
-    longitude: null,
-    marker: null,
     selectedItems: [],
     modalVisible: false,
     storeItems: [],
-    showItems: false
+    filteredItems: [],
+    showItems: false,
+    showFiltered: false,
+    query: ''
   };
 
   toggleModalVisible = () => {
@@ -73,6 +74,12 @@ export default class App extends React.Component {
       const response = await Permissions.askAsync(Permissions.LOCATION);
     }
 
+    const { status2, expires, permissions } = await Permissions.askAsync(
+      Permissions.AUDIO_RECORDING);
+    if (status2 !== "granted") {
+        const response2 = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+    }
+
     Geocoder.init(API_KEY);
 
     navigator.geolocation.getCurrentPosition(
@@ -113,6 +120,9 @@ export default class App extends React.Component {
   mapClick = () => {
     if (this.state.showItems)
       this.setState({ showItems: false });
+    if (this.state.showFiltered)
+      this.setState({ showFiltered: false });
+    Keyboard.dismiss()
   }
 
   renderMarkers = () => {
@@ -141,7 +151,7 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { region, locations, modalVisible, storeItems, showItems } = this.state;
+    const { region, locations, modalVisible, storeItems, showItems, filteredItems, showFiltered } = this.state;
 
     if (region.latitude) {
       return (
@@ -162,7 +172,53 @@ export default class App extends React.Component {
               this.renderMarkers()
             )}
           </MapView>
-          <SearchBar />
+          <View style={styles.searchBar}>
+            <View style={styles.inputWrapper} >
+              <InputGroup borderType='rounded' >
+                <Icon name="search" size={15} color="#a9a9a9" />
+                <Input
+                  style={styles.inputSearch}
+                  onChangeText={ (query) => {
+                    this.setState({query});
+                    if (query == '') {
+                      this.setState({showFiltered: false});
+                    }
+                    if (storeItems) {
+                      if (!showFiltered) this.setState({showFiltered: true});
+                      if (showItems) this.setState({showItems: false});
+                      this.setState({
+                        filteredItems: storeItems.filter((item) => {
+                          return item.name.toLowerCase().includes(query.toLowerCase());
+                        })
+                      });
+                    }
+                  }}
+                  value = { this.state.query }
+                  placeholder="What can I find for you?"
+                />
+                <Icon name="microphone" size={18} color="#a9a9a9" onPress={() => console.log("RECORDING JK")} />
+              </InputGroup>
+            </View>
+          </View>
+          {(showFiltered) && (
+             <View style={{ flex: 3, display: 'flex', flexDirection: 'column' }}>
+             <List
+               addToCart={this.addToCart}
+               items={filteredItems}
+             />
+             <Button
+               title= "View Shopping Cart"
+               onPress = {this.toggleModalVisible}
+             />
+             <CartModal
+               removeFromCart={this.removeFromCart}
+               cartItems={this.state.selectedItems}
+               toggleModalVisible={this.toggleModalVisible}
+               modalVisible={modalVisible}
+             />
+           </View>
+          )}
+
           {(showItems) && (
             <View style={{ flex: 3, display: 'flex', flexDirection: 'column' }}>
               <List
@@ -211,5 +267,24 @@ const styles = StyleSheet.create({
     padding: 2,
     fontWeight: "bold",
     color: "#000"
+  },
+  searchBar:{
+    top: 0,
+    position: "absolute",
+    width: "100%"
+  },
+  inputSearch:{
+      fontSize: 18
+  },
+  inputWrapper:{
+      paddingLeft: 10,
+      paddingRight: 15,
+      marginLeft:15,
+      marginRight:15,
+      marginTop:20,
+      marginBottom:0,
+      backgroundColor:"#fff",
+      opacity:0.9,
+      borderRadius:7
   }
 });
