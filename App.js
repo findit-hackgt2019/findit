@@ -206,7 +206,6 @@ export default class App extends React.Component {
                   value = { this.state.query }
                   placeholder="What can I find for you?"
                 />
-                <Icon name="microphone" size={20} color="#a9a9a9" onPress={() => console.log("RECORDING JK")} />
               </InputGroup>
             </View>
           </View>
@@ -290,10 +289,9 @@ const styles = StyleSheet.create({
   },
   inputWrapper:{
       paddingLeft: 10,
-      paddingRight: 15,
       marginLeft:15,
       marginRight:15,
-      marginTop:20,
+      marginTop:30,
       marginBottom:0,
       backgroundColor:"#fff",
       opacity:0.9,
