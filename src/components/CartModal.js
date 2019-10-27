@@ -69,52 +69,11 @@ export default class CartModal extends React.PureComponent {
         total = total.toFixed(2);
 
         const data = [{
-<<<<<<< HEAD
-          title: 'Shopping Cart',
-=======
           title: '',
->>>>>>> b78ffed319a006ac31af4458967d7b46e5920dfb
           data: cartItems
         }];
 
         return (
-<<<<<<< HEAD
-          <Modal
-            animationType="slide"
-            transparent={false}
-            visible={modalVisible}
-          >
-            <View style={styles.container}>
-              {(modalVisible && orderId != null) && (
-                <QRCode value={orderId} />
-              )}
-              <SectionList
-                style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-                sections={data}
-                keyExtractor={(item) => item.name}
-                renderItem={({ item }) => (
-                  <CartItem
-                    key={item.name}
-                    name={item.name}
-                    price={item.price}
-                    quantity={item.quantity}
-                    removeFromCart={removeFromCart}
-                  />
-                )}
-                renderSectionHeader={({ section: { title } }) => (
-                  <Text style={styles.header}>{title}</Text>
-                )}
-              />
-              <Text styles={styles.header, {fontWeight: '600'}}>
-                Total Price - ${total}
-              </Text>
-              <Button
-                title= "Close Shopping Cart"
-                onPress={toggleModalVisible}
-              />
-            </View>
-          </Modal>
-=======
             <Modal
               animationType="slide"
               transparent={false}
@@ -160,7 +119,6 @@ export default class CartModal extends React.PureComponent {
                 </View>
               </View>
             </Modal>
->>>>>>> b78ffed319a006ac31af4458967d7b46e5920dfb
         )
     }
 }
