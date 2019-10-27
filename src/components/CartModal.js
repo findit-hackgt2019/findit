@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
         padding: 20,
         textAlign: 'center'
     },
-    itemAttribute : {
+    itemAttribute: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
