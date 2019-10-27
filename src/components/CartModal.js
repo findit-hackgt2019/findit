@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, StyleSheet, View, Text, Button, SectionList } from 'react-native';
 import QRCode from 'react-qr-code';
 import CartItem from "./CartItem";
+import { addOrder, editOrder } from "../actions/orders";
 
 const styles = StyleSheet.create({
     container: {
@@ -21,7 +22,38 @@ const styles = StyleSheet.create({
 });
 
 export default class CartModal extends React.PureComponent {
-    render() {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      orderId: null
+    };
+  }
+
+  async componentDidUpdate(prevProps, prevState, snapshot) {
+      if (prevProps.modalVisible !== this.props.modalVisible) {
+          if (this.state.orderId == null) {
+              console.log('making new order')
+              await addOrder({
+                created: new Date(),
+                items: this.props.cartItems
+              })
+                  .then((order) => {
+                      console.log(order)
+                      this.setState({
+                          orderId: order._id
+                      });
+                  });
+          } else {
+              console.log('editing existing order')
+              await editOrder(this.state.orderId, {
+                  items: this.props.cartItems
+              });
+          }
+      }
+  }
+
+  render() {
         const { cartItems, toggleModalVisible, modalVisible, removeFromCart } = this.props;
 
         let total = 0;
