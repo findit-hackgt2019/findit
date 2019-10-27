@@ -57,6 +57,10 @@ export default class CartModal extends React.PureComponent {
         const { cartItems, toggleModalVisible, modalVisible, removeFromCart } = this.props;
         const { orderId } = this.state;
 
+        if (cartItems == null) {
+          return null;
+        }
+
         let total = 0;
         for (let i = 0; i < cartItems.length; i++) {
           total += cartItems[i].quantity * cartItems[i].price;
@@ -74,10 +78,10 @@ export default class CartModal extends React.PureComponent {
                   Shopping Cart
                 </Text>
                 <View style={{alignItems: 'center', marginBottom: 25}}>
-                {(modalVisible && (cartItems.length != 0)) && (
+                {(modalVisible && cartItems.length > 0 && orderId != null) && (
                   <QRCode value={orderId} />
                 )}
-                {(cartItems.length == 0) && (
+                {(cartItems.length === 0) && (
                   <Text style={{ marginTop: 20, fontFamily: 'Montserrat' }}>
                     Your shopping list is empty.
                   </Text>
