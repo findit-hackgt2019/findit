@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, StyleSheet, View, Text, Button, SectionList } from 'react-native';
+import { Modal, StyleSheet, View, Text, Button, FlatList } from 'react-native';
 import QRCode from 'react-qr-code';
 import CartItem from "./CartItem";
 import { addOrder, editOrder } from "../actions/orders";
@@ -68,11 +68,6 @@ export default class CartModal extends React.PureComponent {
         }
         total = total.toFixed(2);
 
-        const data = [{
-          title: '',
-          data: cartItems
-        }];
-
         return (
             <Modal
               animationType="slide"
@@ -90,9 +85,9 @@ export default class CartModal extends React.PureComponent {
                 <Text>
                   Your shopping list is empty.
                 </Text>)}
-                <SectionList
-                  style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-                  sections={data}
+                <FlatList
+                  style={{ flex: 1 }}
+                  items={cartItems}
                   keyExtractor={(item) => item.name}
                   renderItem={({ item }) => (
                     <CartItem
@@ -102,9 +97,6 @@ export default class CartModal extends React.PureComponent {
                       quantity={item.quantity}
                       removeFromCart={removeFromCart}
                     />
-                  )}
-                  renderSectionHeader={({ section: { title } }) => (
-                    <Text style={styles.paragraph}>{title}</Text>
                   )}
                 />
                 <Text styles={styles.price}>

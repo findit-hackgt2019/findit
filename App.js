@@ -105,7 +105,7 @@ export default class App extends React.Component {
       });
 
     const storeItems = await getAllItems();
-    if (storeItems != null) {
+    if (storeItems != null && storeItems.status !== "Failed") {
       this.setState({
         storeItems
       });
@@ -156,6 +156,8 @@ export default class App extends React.Component {
 
   render() {
     const { region, locations, modalVisible, storeItems, showItems, filteredItems, showFiltered, currentStore } = this.state;
+
+    console.log('storeItems', storeItems)
 
     if (region.latitude) {
       return (
