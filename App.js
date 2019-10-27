@@ -55,6 +55,25 @@ export default class App extends React.Component {
     console.log(this.state.selectedItems);
   }
 
+  removeFromCart=(item_name) =>{
+    const {selectedItems} = this.state;
+    console.log("tried to remove");
+    this.setState(
+      {selectedItems: selectedItems.filter(function(item) {
+        return item.name !== item_name
+    })});
+  }
+
+  renderMarkers() {
+    return this.props.places.map((place, i) => (
+      <Marker
+        key={i}
+        title={place.name}
+        coordinate={place.coods}
+      />
+    ));
+  }
+
   async componentDidMount() {
     const { status } = await Permissions.getAsync(Permissions.LOCATION);
 
@@ -147,6 +166,7 @@ export default class App extends React.Component {
         />
 
         <CartModal
+          removeFromCart = {this.removeFromCart}
           cartItems = {this.state.selectedItems}
           toggleModalVisible = {this.toggleModalVisible}
           modalVisible = {modalVisible} />
