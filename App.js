@@ -4,10 +4,9 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import RetroMapStyles from './assets/MapStyles/RetroMapStyles.json';
 import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
-import Greeting from './src/components/Greeting';
 import List from './src/components/List';
 import CartModal from './src/components/CartModal';
-import { getAllItems, searchItems } from "./src/actions/api";
+import { getAllItems } from "./src/actions/api";
 
 const PLACE_API = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=';
 const API_KEY = 'AIzaSyCAjd5RY-n2Tm0Qm4wcDFYUuEOvJkX3bqI';
@@ -26,16 +25,18 @@ export default class App extends React.Component {
     marker: null,
     selectedItems: [],
     modalVisible: false,
-    storeItems: []
+    storeItems: [],
+    showItems: false
   };
 
-  toggleModalVisible=() =>{
-    const {modalVisible} = this.state;
-    this.setState({modalVisible: !modalVisible});
+  toggleModalVisible = () => {
+    this.setState((prevState) => ({
+      modalVisible: !prevState.modalVisible
+    }));
   };
 
-  addToCart=(item) =>{
-    const {selectedItems} = this.state;
+  addToCart = (item) => {
+    const { selectedItems } = this.state;
     const items_copy = [...selectedItems];
 
     let found = false;
@@ -56,8 +57,8 @@ export default class App extends React.Component {
     });
   };
 
-  removeFromCart=(item_name) =>{
-    const {selectedItems} = this.state;
+  removeFromCart = (item_name) => {
+    const { selectedItems } = this.state;
 
     this.setState({
       selectedItems: selectedItems.filter((item) => item.name !== item_name)
@@ -91,7 +92,7 @@ export default class App extends React.Component {
             this.setState({ locations: data.results }),
             (err) => console.log(err)
         })
-        .catch(console.log)
+          .catch(console.log)
       });
 
     const storeItems = await getAllItems();
@@ -101,6 +102,12 @@ export default class App extends React.Component {
       });
     }
   }
+
+  markerClick = () => {
+    this.setState((prevState) => ({
+      showItems: !prevState.showItems
+    }));
+  };
 
   renderMarkers = () => {
     const { locations } = this.state;
@@ -117,48 +124,53 @@ export default class App extends React.Component {
         <Marker
           key={idx}
           coordinate={{ latitude: lat, longitude: lng }}
-          onCalloutPress={this.markerClick} >
-              <View style={styles.callout}>
-                  <Text style={styles.calloutText}>{name}</Text>
-              </View>
+          onPress={this.markerClick}
+        >
+            <View style={styles.callout}>
+              <Text style={styles.calloutText}>{name}</Text>
+            </View>
         </Marker>
       )
     });
   };
 
   render() {
-    const { region, locations, modalVisible, storeItems } = this.state;
+    const { region, locations, modalVisible, storeItems, showItems } = this.state;
 
     if (region.latitude) {
       return (
         <View style={{ flex: 1 }}>
           <MapView
-            provider = { PROVIDER_GOOGLE }
+            provider={PROVIDER_GOOGLE}
             showsUserLocation
             style={{ flex: 1 }}
             customMapStyle={ RetroMapStyles }
             moveOnMarkerPress={true}
-            region = { region }
-            minZoomLevel={ 10 }
-            >
+            region={region}
+            minZoomLevel={10}
+          >
             {locations != null && (
               this.renderMarkers()
             )}
           </MapView>
-          <Greeting />
-
-          <List addToCart = {this.addToCart} items={storeItems}/>
-
-          <Button
-             title= "View Shopping Cart"
-             onPress = {this.toggleModalVisible}
-          />
-
-          <CartModal
-            removeFromCart = {this.removeFromCart}
-            cartItems = {this.state.selectedItems}
-            toggleModalVisible = {this.toggleModalVisible}
-            modalVisible = {modalVisible} />
+          {(showItems) && (
+            <View style={{ flex: 3, display: 'flex', flexDirection: 'column' }}>
+              <List
+                addToCart={this.addToCart}
+                items={storeItems}
+              />
+              <Button
+                title= "View Shopping Cart"
+                onPress = {this.toggleModalVisible}
+              />
+              <CartModal
+                removeFromCart={this.removeFromCart}
+                cartItems={this.state.selectedItems}
+                toggleModalVisible={this.toggleModalVisible}
+                modalVisible={modalVisible}
+              />
+            </View>
+          )}
         </View>
       );
     }

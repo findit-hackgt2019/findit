@@ -1,11 +1,15 @@
 import React from 'react';
-import { StyleSheet, ScrollView, Text} from 'react-native';
+import { StyleSheet, View, SectionList, Text} from 'react-native';
 import ListItem from './ListItem';
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
-        height: '50%'
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    flexOne: {
+        flex: 1
     },
     paragraph: {
         padding: 20,
@@ -13,26 +17,34 @@ const styles = StyleSheet.create({
     }
 });
 
-class List extends React.Component {
+class List extends React.PureComponent {
     render() {
         const { items, addToCart } = this.props;
 
+        const data = [{
+            title: 'Store Items',
+            data: items
+        }];
+
         return (
-            <ScrollView style={styles.container}>
-                <Text style={styles.paragraph}>
-                    Store Items
-                </Text>
-                {items.map (item =>
-                    <ListItem
-                      key={item.name}
-                      name={item.name}
-                      price={item.price}
-                      quantity={item.quantity}
-                      addToCart={addToCart}
-                    />
+          <View style={styles.container}>
+              <Text style={styles.paragraph}>Store Items</Text>
+              <SectionList
+                style={styles.container}
+                sections={data}
+                keyExtractor={(item) => item.name}
+                renderItem={({ item }) => (
+                  <ListItem
+                    key={item.name}
+                    name={item.name}
+                    price={item.price}
+                    quantity={item.quantity}
+                    addToCart={addToCart}
+                  />
                 )}
-            </ScrollView>
-        )
+              />
+          </View>
+        );
     }
 }
 

@@ -2,20 +2,26 @@ import React from 'react';
 import { StyleSheet, View, Text, Button, Alert} from 'react-native';
 
 const styles = StyleSheet.create({
-    paragraph: {
-        padding: 20,
-        textAlign: 'center'
-    },
-    itemAttribute : {
+    container : {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         textAlign: 'center',
         padding: 20
+    },
+    priceButton: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    price: {
+      marginLeft: 12,
+      marginRight: 12
     }
 });
 
-class ListItem extends React.Component {
+class ListItem extends React.PureComponent {
     onPressButton = () => {
         const { name, price, quantity, addToCart } = this.props;
 
@@ -26,17 +32,19 @@ class ListItem extends React.Component {
     render() {
         const { name, price } = this.props;
         return (
-            <View style={styles.itemAttribute}>
+            <View style={styles.container}>
                 <Text>
                     {name}
                 </Text>
-                <Text>
-                    ${price}
-                </Text>
-                <Button
-                    title="Add to Cart"
-                    onPress={this.onPressButton}
-                />
+                <View style={styles.priceButton}>
+                  <Text style={styles.price}>
+                      ${price}
+                  </Text>
+                  <Button
+                      title="Add to Cart"
+                      onPress={this.onPressButton}
+                  />
+                </View>
             </View>
         )
     }
