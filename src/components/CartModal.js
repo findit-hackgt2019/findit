@@ -82,8 +82,8 @@ export default class CartModal extends React.PureComponent {
                 <Text style={styles.heading}>
                   Shopping Cart
                 </Text>
-                {(cartItems.length != 0) && (modalVisible) && (
-                   <QRCode value={JSON.stringify(cartItems)} />
+                {(modalVisible && orderId != null) && (
+                  <QRCode value={orderId} />
                 )}
               {(cartItems.length == 0) && (
                 <Text>
