@@ -40,7 +40,7 @@ export async function addOrder(order) {
 }
 
 const editOrderUrl = 'https://findithackgt.azurewebsites.net/api/editOrder';
-export async function editOrder(id, newOrder) {
+export async function editOrder(id, order) {
   return fetch(editOrderUrl, {
     method: 'post',
     headers: {
@@ -49,7 +49,7 @@ export async function editOrder(id, newOrder) {
     },
     body: JSON.stringify({
       id,
-      newOrder
+      order
     })
   })
     .then((res) => res.json());
