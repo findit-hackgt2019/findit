@@ -120,13 +120,13 @@ export default class App extends React.Component {
   };
 
   mapClick = () => {
+    Keyboard.dismiss();
     if (this.state.showItems)
       this.setState({ showItems: false });
     if (this.state.showFiltered)
       this.setState({ showFiltered: false });
     if (this.state.currentStore)
-      this.setState({ currentStore: null })
-    Keyboard.dismiss()
+      this.setState({ currentStore: null });
   }
 
   renderMarkers = () => {
@@ -187,9 +187,10 @@ export default class App extends React.Component {
                     if (query == '') {
                       this.setState({showFiltered: false});
                     }
-                    if (!currentStore && query != '') {
+                    if (!currentStore && query.length == 1) {
+                      Keyboard.dismiss();
                       alert("Please Select a Store");
-                      this.setState({ query: '' })
+                      this.setState({ query: '' });
                     } else {
                       if (storeItems) {
                         if (!showFiltered) this.setState({showFiltered: true});
@@ -205,7 +206,7 @@ export default class App extends React.Component {
                   value = { this.state.query }
                   placeholder="What can I find for you?"
                 />
-                <Icon name="microphone" size={18} color="#a9a9a9" onPress={() => console.log("RECORDING JK")} />
+                <Icon name="microphone" size={20} color="#a9a9a9" onPress={() => console.log("RECORDING JK")} />
               </InputGroup>
             </View>
           </View>
