@@ -30,6 +30,7 @@ class CartItem extends React.PureComponent {
 
     render() {
         const { name, price, quantity } = this.props;
+        let curPrice = price * quantity;
 
         return (
             <View style={styles.container}>
@@ -38,7 +39,7 @@ class CartItem extends React.PureComponent {
                 </Text>
                 <View style={styles.priceButton}>
                     <Text style={styles.price}>
-                        ${Math.round(100 * quantity * price) / 100}
+                        ${curPrice.toFixed(2)}
                     </Text>
                     <Button
                         title="Remove"

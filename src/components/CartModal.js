@@ -28,6 +28,7 @@ export default class CartModal extends React.PureComponent {
         for (let i = 0; i < cartItems.length; i++) {
           total += cartItems[i].quantity * cartItems[i].price;
         }
+        total = total.toFixed(2);
 
         const data = [{
           title: 'Store Items',

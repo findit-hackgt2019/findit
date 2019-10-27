@@ -86,7 +86,7 @@ export default class App extends React.Component {
         }),
         (err) => console.warn(err)
 
-        fetch(PLACE_API + latitude + ',' + longitude + '&radius=3000&type=store&key=' + API_KEY)
+        fetch(PLACE_API + latitude + ',' + longitude + '&radius=6000&type=store&key=' + API_KEY)
           .then(res => res.json())
           .then(data => {
             this.setState({ locations: data.results }),
@@ -108,6 +108,11 @@ export default class App extends React.Component {
       showItems: !prevState.showItems
     }));
   };
+
+  mapClick = () => {
+    if (this.state.showItems)
+      this.setState({ showItems: false });
+  }
 
   renderMarkers = () => {
     const { locations } = this.state;
@@ -145,9 +150,12 @@ export default class App extends React.Component {
             showsUserLocation
             style={{ flex: 1 }}
             customMapStyle={ RetroMapStyles }
-            moveOnMarkerPress={true}
-            region={region}
-            minZoomLevel={10}
+            initialRegion={ region }
+            minZoomLevel={ 13 }
+            maxZoomLevel={ 15 }
+            loadingEnabled={ true }
+            zoomTapEnabled={ false }
+            onPress={ this.mapClick }
           >
             {locations != null && (
               this.renderMarkers()
