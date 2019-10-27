@@ -81,13 +81,14 @@ export default class CartModal extends React.PureComponent {
                 {(modalVisible && orderId != null) && (
                   <QRCode value={orderId} />
                 )}
-              {(cartItems.length == 0) && (
-                <Text>
-                  Your shopping list is empty.
-                </Text>)}
+                {(cartItems.length == 0) && (
+                  <Text>
+                    Your shopping list is empty.
+                  </Text>
+                )}
                 <FlatList
                   style={{ flex: 1 }}
-                  items={cartItems}
+                  data={cartItems}
                   keyExtractor={(item) => item.name}
                   renderItem={({ item }) => (
                     <CartItem

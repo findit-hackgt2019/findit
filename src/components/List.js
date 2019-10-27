@@ -4,7 +4,8 @@ import ListItem from './ListItem';
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        display: 'flex'
     },
     flexOne: {
         flex: 1
@@ -29,8 +30,8 @@ class List extends React.PureComponent {
           <View style={styles.container}>
               <Text style={styles.header}>{name}</Text>
               <FlatList
-                style={styles.container}
-                items={items}
+                style={styles.flexOne}
+                data={items}
                 keyExtractor={(item) => item.name}
                 renderItem={({ item }) => (
                   <ListItem
