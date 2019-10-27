@@ -4,20 +4,18 @@ import ListItem from './ListItem';
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#02063a'
     },
     flexOne: {
         flex: 1
-    },
-    paragraph: {
-        padding: 20,
-        textAlign: 'center'
     },
     header: {
       padding: 20,
       textAlign: 'center',
       fontSize: 18,
-      fontWeight: "600"
+      fontWeight: "600",
+      color: '#fff'
     }
 });
 

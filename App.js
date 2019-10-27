@@ -231,18 +231,19 @@ export default class App extends React.Component {
           )}
 
           {(showItems) && (currentStore) && (
-            <View style={{ flex: 3, display: 'flex', flexDirection: 'column' }}>
+            <View style={{ flex: 3, display: 'flex', flexDirection: 'column', backgroundColor: '#02063a' }}>
               <List
                 addToCart={this.addToCart}
                 items={storeItems}
                 name={currentStore}
               />
-              <View style= {{margin: 20, padding: 5, borderColor: '#0c7529', borderWidth: 1}}>
-                <Button
-                  title= "View Shopping Cart"
-                  onPress = {this.toggleModalVisible}
-                  color ='#0c7529'
-                />
+              <View style= {{margin: 20}}>
+              <Button
+                title= "View Shopping Cart"
+                onPress = {this.toggleModalVisible}
+                color ='#6934ff'
+                style={{ borderRadius: 50 }}
+              />
               </View>
               <CartModal
                 removeFromCart={this.removeFromCart}
@@ -296,7 +297,6 @@ const styles = StyleSheet.create({
       marginTop:30,
       marginBottom:0,
       backgroundColor:"#fff",
-      opacity:0.9,
       borderRadius:7
   }
 });
