@@ -5,7 +5,6 @@ import RetroMapStyles from './assets/MapStyles/RetroMapStyles.json';
 import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
 import Greeting from './src/components/Greeting';
-//import ListItem from './src/components/ListItem.js';
 import List from './src/components/List';
 import CartModal from './src/components/CartModal';
 import { getAllItems, searchItems } from "./src/actions/api";
@@ -28,51 +27,42 @@ export default class App extends React.Component {
     selectedItems: [],
     modalVisible: false,
     storeItems: []
-  }
+  };
 
   toggleModalVisible=() =>{
     const {modalVisible} = this.state;
     this.setState({modalVisible: !modalVisible});
-  }
+  };
 
   addToCart=(item) =>{
     const {selectedItems} = this.state;
     const items_copy = [...selectedItems];
+
     let found = false;
     for (let i = 0; i < items_copy.length ; i ++) {
-      if (items_copy[i].name == item.name) {
+      if (items_copy[i].name === item.name) {
         items_copy[i].quantity += 1;
         found = true;
         break;
       }
     }
-    if (found == false) {
+
+    if (!found) {
       items_copy.push(item);
     }
+
     this.setState({
       selectedItems: items_copy
-    })
-    console.log(this.state.selectedItems);
-  }
+    });
+  };
 
   removeFromCart=(item_name) =>{
     const {selectedItems} = this.state;
-    console.log("tried to remove");
-    this.setState(
-      {selectedItems: selectedItems.filter(function(item) {
-        return item.name !== item_name
-    })});
-  }
 
-  renderMarkers() {
-    return this.props.places.map((place, i) => (
-      <Marker
-        key={i}
-        title={place.name}
-        coordinate={place.coods}
-      />
-    ));
-  }
+    this.setState({
+      selectedItems: selectedItems.filter((item) => item.name !== item_name)
+    });
+  };
 
   async componentDidMount() {
     const { status } = await Permissions.getAsync(Permissions.LOCATION);
@@ -85,7 +75,14 @@ export default class App extends React.Component {
 
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude, longitude }}) => {
-        this.setState({ region: { latitude: latitude, longitude: longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}),
+        this.setState({
+          region: {
+            latitude: latitude,
+            longitude: longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421
+          }
+        }),
         (err) => console.warn(err)
 
         fetch(PLACE_API + latitude + ',' + longitude + '&radius=3000&type=store&key=' + API_KEY)
@@ -105,80 +102,72 @@ export default class App extends React.Component {
     }
   }
 
-  // async getCoords(name) {
-  //   const json = await Geocoder.from(name);
-  //   return json.results[0].geometry.location;
-  // }
-
   renderMarkers = () => {
-    const { locations } = this.state
-    return (
-      <>
-        {
-          locations.map((location, idx) => {
-            const {
-              geometry: { location: { lat, lng }},
-              name
-            } = location
-            if (lat == null || lng == null) return null;
-            return (
-            <>
-              <Marker
-                key={idx}
-                coordinate={{ latitude: lat, longitude: lng }}
-                onCalloutPress={this.markerClick} >
-                    <View style={styles.callout}>
-                        <Text style={styles.calloutText}>{name}</Text>
-                    </View>
-              </Marker>
-            </>
-            )
-          })
-        }
-      </>
-    )
-  }
+    const { locations } = this.state;
+
+    return locations.map((location, idx) => {
+      const {
+        geometry: { location: { lat, lng }},
+        name
+      } = location;
+
+      if (lat == null || lng == null) return null;
+
+      return (
+        <Marker
+          key={idx}
+          coordinate={{ latitude: lat, longitude: lng }}
+          onCalloutPress={this.markerClick} >
+              <View style={styles.callout}>
+                  <Text style={styles.calloutText}>{name}</Text>
+              </View>
+        </Marker>
+      )
+    });
+  };
 
   render() {
-    const { region, locations, modalVisible, storeItems } = this.state
+    const { region, locations, modalVisible, storeItems } = this.state;
 
     if (region.latitude) {
       return (
         <View style={{ flex: 1 }}>
-        <MapView
-          provider = { PROVIDER_GOOGLE }
-          showsUserLocation
-          style={{ flex: 1 }}
-          customMapStyle={ RetroMapStyles }
-          moveOnMarkerPress={true}
-          region = { region }
-          minZoomLevel={ 10 }
-          >
-          {locations != undefined && this.renderMarkers()}
-        </MapView>
-        <Greeting />
+          <MapView
+            provider = { PROVIDER_GOOGLE }
+            showsUserLocation
+            style={{ flex: 1 }}
+            customMapStyle={ RetroMapStyles }
+            moveOnMarkerPress={true}
+            region = { region }
+            minZoomLevel={ 10 }
+            >
+            {locations != null && (
+              this.renderMarkers()
+            )}
+          </MapView>
+          <Greeting />
 
-        <List addToCart = {this.addToCart} items={storeItems}/>
+          <List addToCart = {this.addToCart} items={storeItems}/>
 
-        <Button
-           title= "View Shopping Cart"
-           onPress = {this.toggleModalVisible}
-        />
+          <Button
+             title= "View Shopping Cart"
+             onPress = {this.toggleModalVisible}
+          />
 
-        <CartModal
-          removeFromCart = {this.removeFromCart}
-          cartItems = {this.state.selectedItems}
-          toggleModalVisible = {this.toggleModalVisible}
-          modalVisible = {modalVisible} />
+          <CartModal
+            removeFromCart = {this.removeFromCart}
+            cartItems = {this.state.selectedItems}
+            toggleModalVisible = {this.toggleModalVisible}
+            modalVisible = {modalVisible} />
         </View>
-      )
+      );
     }
 
     return (
       <View style= {{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text>Change your location permissions!</Text>
       </View>
-    )
+    );
   }
 }
 
